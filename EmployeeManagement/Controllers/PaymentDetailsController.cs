@@ -24,7 +24,8 @@ namespace EmployeeManagement.Controllers
         [HttpGet]
         public IEnumerable<PaymentDetail> GetPaymentDetails()
         {
-            return _context.PaymentDetails;
+            var list = _context.PaymentDetails;
+            return list;
         }
 
         // GET: api/PaymentDetails/5

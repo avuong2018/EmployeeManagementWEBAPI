@@ -27,7 +27,13 @@ namespace EmployeeManagement
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddDbContext<PaymentDetailContext>(options => options.UseSqlServer("Server=(LocalDb)\\MSSQLLocalDB; Database=PaymentDetailDB; Trusted_Connection=True; MultipleActiveResultSets=True;"));
+
+            //Access to appsetting.json to get connection string
+            //var defaultConnection = Microsoft.Extensions.Configuration.ConfigurationExtensions.GetConnectionString(this.Configuration, "DefaultConnection");
+            var defaultConnection = Configuration.GetSection("ConnectionStrings")["DefaultConnection"];
+            services.AddDbContext<PaymentDetailContext>(options => options.UseSqlServer(defaultConnection));
+
+            //services.AddDbContext<PaymentDetailContext>(options => options.UseSqlServer("Server=(LocalDb)\\MSSQLLocalDB; Database=PaymentDetailDB; Trusted_Connection=True; MultipleActiveResultSets=True;"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
