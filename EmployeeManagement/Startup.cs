@@ -29,7 +29,8 @@ namespace EmployeeManagement
         {
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
-                .AddJsonOptions(MVC_Json_Options => {
+                .AddJsonOptions(MVC_Json_Options =>
+                {
                     var resolver = MVC_Json_Options.SerializerSettings.ContractResolver;
                     if (resolver != null)
                         (resolver as DefaultContractResolver).NamingStrategy = null; //set NamingStrategy so all property in Json result are the same with designed models properties
@@ -40,7 +41,8 @@ namespace EmployeeManagement
             var defaultConnection = Configuration.GetSection("ConnectionStrings")["DefaultConnection"];
             services.AddDbContext<PaymentDetailContext>(options => options.UseSqlServer(defaultConnection));
 
-            //services.AddDbContext<PaymentDetailContext>(options => options.UseSqlServer("Server=(LocalDb)\\MSSQLLocalDB; Database=PaymentDetailDB; Trusted_Connection=True; MultipleActiveResultSets=True;"));
+            //Add cross origin so web API can contact with Angular
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,6 +52,13 @@ namespace EmployeeManagement
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            //Allow any post, get, delete, put to access web api from angular
+            app.UseCors(options =>
+            options.WithOrigins("http://localhost:4200/")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowAnyOrigin());
 
             app.UseMvc();
         }
